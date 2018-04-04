@@ -1,5 +1,4 @@
 import React from 'react';
-import Search from './search';
 
 class RickAndMortyComponent extends React.Component {
   constructor({ initialState }) {
