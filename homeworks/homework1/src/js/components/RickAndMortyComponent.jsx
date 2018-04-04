@@ -1,14 +1,14 @@
 import React from 'react';
-
-
+import Search from './search';
 
 class RickAndMortyComponent extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor({ initialState }) {
+    super();
     this.state = {
       error: null,
       isLoaded: false,
-      characters: []
+      characters: initialState,
+      items: ''
     };
   }
 
@@ -31,7 +31,20 @@ class RickAndMortyComponent extends React.Component {
         }
       )
   }
+  filterList (event) {
+    let updatedList = this.state.characters;
+    console.log('updatedList', updatedList);
+    console.log('this.state.items', event.target.value);
+    updatedList = this.state.characters.filter(
+      (characters) =>{
+        console.log('characters.name', characters.name);
+        return characters.name.toLowerCase().indexOf(event.target.value.toLowerCase()) !== -1;
+      });
 
+    console.log('updatedList', updatedList);
+    this.setState({items: event.target.value, characters: updatedList });
+
+  }
   render() {
     const { error, isLoaded, characters } = this.state;
     if (error) {
@@ -40,20 +53,46 @@ class RickAndMortyComponent extends React.Component {
       return <div>Loading...</div>;
     } else {
       return (
-        <ul class="character-list">
-          {characters.map(character => (
-            <li key={character.id} class="character-item">
-              <div>
-                <img src={character.image}/>
-              </div>
-              <h3>{character.name}</h3>
-              <span>{character.species}</span>
-            </li>
-          ))}
-        </ul>
+        <div>
+        <form>
+            <input 
+              type="text" 
+              className="form-control form-control-lg" 
+              placeholder="Search" 
+              onChange={this.filterList.bind(this)}
+              value={this.state.items}/>
+          </form>
+        <div className="character-cards">
+        {
+          
+          characters.map(character => (
+            <Characters
+              key={character.id}
+              image={character.image}
+              name={character.name}
+              species={character.species}
+            />
+          ))
+        }
+      </div>
+      </div>
       );
     }
   }
+  
+}
+function Characters(props){
+    return (     
+      <ul className="character-list">        
+            <li key={props.id} className="character-item">
+              <div>
+                <img src={props.image}/>
+              </div>
+              <h3>{props.name}</h3>
+              <span>{props.species}</span>
+            </li>        
+        </ul>
+    )
 }
 
 export default RickAndMortyComponent;
